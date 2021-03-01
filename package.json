@@ -1,0 +1,42 @@
+{
+  "name": "@ai-zen/event-bus",
+  "version": "3.1.2",
+  "description": "A simple JavaScript library for managing events.",
+  "main": "dist/EventBus.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build & node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-zen/event-bus.git"
+  },
+  "keywords": [
+    "event",
+    "event-bus",
+    "event bus"
+  ],
+  "author": "刘自强",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.15.2",
+    "@typescript-eslint/parser": "^4.15.2",
+    "eslint": "^7.21.0",
+    "typescript": "^4.2.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ]
+  }
+}
