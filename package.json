@@ -1,6 +1,6 @@
 {
   "name": "@ai-zen/event-bus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple JavaScript library for managing events.",
   "main": "dist/EventBus.js",
   "type": "module",
