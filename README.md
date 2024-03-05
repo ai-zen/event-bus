@@ -1,5 +1,3 @@
-### README.md
-
 # EventBus
 
 EventBus is a simple event management library for TypeScript.
