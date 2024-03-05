@@ -1,41 +1,33 @@
 export default class EventBus {
-    constructor() {
-        this.subscribers = new Map();
-    }
+    subscribers = new Map();
     on(name, handler) {
-        var _a;
         if (!this.subscribers.has(name)) {
             this.subscribers.set(name, new Set());
         }
-        (_a = this.subscribers.get(name)) === null || _a === void 0 ? void 0 : _a.add(handler);
+        this.subscribers.get(name)?.add(handler);
     }
     off(name, handler) {
-        var _a, _b;
-        return (_b = (_a = this.subscribers.get(name)) === null || _a === void 0 ? void 0 : _a.delete(handler)) !== null && _b !== void 0 ? _b : false;
+        return this.subscribers.get(name)?.delete(handler) ?? false;
     }
     offAll(name) {
-        var _a;
-        (_a = this.subscribers.get(name)) === null || _a === void 0 ? void 0 : _a.clear();
+        this.subscribers.get(name)?.clear();
     }
     destroy() {
         this.subscribers.clear();
     }
     emit(name, ...args) {
-        var _a;
-        (_a = this.subscribers.get(name)) === null || _a === void 0 ? void 0 : _a.forEach((handler) => handler(...args));
+        this.subscribers.get(name)?.forEach((handler) => handler(...args));
     }
     gather(name, ...args) {
-        var _a;
         const results = [];
-        (_a = this.subscribers.get(name)) === null || _a === void 0 ? void 0 : _a.forEach((handler) => {
+        this.subscribers.get(name)?.forEach((handler) => {
             results.push(handler(...args));
         });
         return results;
     }
     gatherMap(name, ...args) {
-        var _a;
         const results = new Map();
-        (_a = this.subscribers.get(name)) === null || _a === void 0 ? void 0 : _a.forEach((handler) => {
+        this.subscribers.get(name)?.forEach((handler) => {
             results.set(handler, handler(...args));
         });
         return results;

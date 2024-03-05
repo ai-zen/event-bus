@@ -1,4 +1,4 @@
-export declare type EventHandler = (...args: any[]) => any;
+export type EventHandler = (...args: any[]) => any;
 export default class EventBus {
     subscribers: Map<string, Set<EventHandler>>;
     on(name: string, handler: EventHandler): void;

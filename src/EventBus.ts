@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type EventHandler = (...args: any[]) => any;
 
 export default class EventBus {
