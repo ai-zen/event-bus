@@ -1,16 +1,19 @@
 {
   "name": "@ai-zen/event-bus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "EventBus is a simple event management library for TypeScript.",
   "main": "dist/EventBus.js",
   "types": "dist/EventBus.d.ts",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "test": "npm run build && NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "npm run build && cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "repository": {
     "type": "git",
@@ -24,8 +27,9 @@
   "author": "LZQCN",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^29",
     "@jest/globals": "^29",
+    "@types/jest": "^29",
+    "cross-env": "^7.0.3",
     "jest": "^29",
     "typescript": "^5.3.3"
   },

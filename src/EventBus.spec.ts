@@ -112,4 +112,29 @@ describe("EventBus", () => {
     const result = await eventBus.promise("eventName");
     expect(result).toEqual("arg1");
   });
+
+  test("subscribing to an event and unsubscribing using disposable", () => {
+    const disposable = eventBus.on("eventName", handler1);
+    eventBus.emit("eventName", "arg1", "arg2");
+
+    expect(handler1).toHaveBeenCalledWith("arg1", "arg2");
+
+    disposable.dispose(); // Unsubscribe using disposable
+
+    eventBus.emit("eventName", "arg3", "arg4");
+
+    expect(handler1).toHaveBeenCalledTimes(1);
+    expect(handler1).toHaveBeenCalledWith("arg1", "arg2");
+  });
+
+  test("subscribing to an event and automatically unsubscribing after the first invocation using disposable", () => {
+    const disposable = eventBus.once("eventName", handler1);
+    eventBus.emit("eventName", "arg1", "arg2");
+    eventBus.emit("eventName", "arg3", "arg4");
+
+    expect(handler1).toHaveBeenCalledTimes(1);
+    expect(handler1).toHaveBeenCalledWith("arg1", "arg2");
+
+    disposable.dispose(); // Automatically unsubscribed after the first invocation
+  });
 });

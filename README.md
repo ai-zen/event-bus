@@ -1,5 +1,7 @@
 # EventBus
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 EventBus is a simple event management library for TypeScript.
 
 ## Installation
@@ -11,51 +13,63 @@ npm install @ai-zen/event-bus
 ## Usage
 
 ```javascript
-import EventBus from '@ai-zen/event-bus';
+import EventBus from "@ai-zen/event-bus";
 
 // Create a new instance of EventBus
 const eventBus = new EventBus();
 
 // Subscribe to an event
-eventBus.on('eventName', (arg1, arg2) => {
+eventBus.on("eventName", (arg1, arg2) => {
   // Handle the event
 });
 
 // Unsubscribe from an event
-eventBus.off('eventName', handler);
+eventBus.off("eventName", handler);
 
 // Unsubscribe from all handlers of an event
-eventBus.offAll('eventName');
+eventBus.offAll("eventName");
 
 // Destroy the event bus and remove all event subscriptions
 eventBus.destroy();
 
 // Emit an event
-eventBus.emit('eventName', arg1, arg2);
+eventBus.emit("eventName", arg1, arg2);
 
 // Gather the results returned by all handlers of an event
-const results = eventBus.gather<T>('eventName', arg1, arg2);
+const results = eventBus.gather < T > ("eventName", arg1, arg2);
 
 // Gather the results returned by all handlers of an event as a map
-const resultsMap = eventBus.gatherMap<T>('eventName', arg1, arg2);
+const resultsMap = eventBus.gatherMap < T > ("eventName", arg1, arg2);
 
 // Subscribe to an event and automatically unsubscribe after the first invocation
-eventBus.once('eventName', (arg1, arg2) => {
+eventBus.once("eventName", (arg1, arg2) => {
   // Handle the event
 });
 
 // Subscribe to an event and return a promise that resolves when the event is emitted
-const resultPromise = eventBus.promise('eventName');
+const resultPromise = eventBus.promise("eventName");
 ```
 
 ## API
 
-### `on(name: string, handler: EventHandler): void`
+### `on(name: string, handler: EventHandler): Disposable`
 
 Subscribe to an event.
 
 - `name` (required): The name of the event to subscribe to.
 - `handler` (required): The event handler function.
+- Returns: A Disposable object with a `dispose` method that can be used to unsubscribe from the event.
+
+#### Example
+
+```javascript
+const disposable = eventBus.on("eventName", (arg1, arg2) => {
+  // Handle the event
+});
+
+// Unsubscribe from the event
+disposable.dispose();
+```
 
 ### `off(name: string, handler: EventHandler): boolean`
 
@@ -98,12 +112,23 @@ Gather the results returned by all handlers of an event as a map.
 - `args` (optional): Arguments to pass to the event handlers.
 - Returns: A map containing the event handler functions as keys and the results returned by the event handlers as values.
 
-### `once(name: string, handler: EventHandler): void`
+### `once(name: string, handler: EventHandler): Disposable`
 
 Subscribe to an event and automatically unsubscribe after the first invocation.
 
 - `name` (required): The name of the event to subscribe to.
 - `handler` (required): The event handler function.
+- Returns: A Disposable object with a `dispose` method that can be used to unsubscribe from the event.
+
+#### Example
+
+```javascript
+const disposable = eventBus.once("eventName", (arg1, arg2) => {
+  // Handle the event
+});
+
+// The handler will be automatically unsubscribed after the first invocation
+```
 
 ### `promise(name: string): Promise<any>`
 
@@ -111,6 +136,16 @@ Subscribe to an event and return a promise that resolves when the event is emitt
 
 - `name` (required): The name of the event to subscribe to.
 - Returns: A promise that resolves with the result of the event handler when the event is emitted.
+
+#### Example
+
+```javascript
+const resultPromise = eventBus.promise("eventName");
+
+resultPromise.then((result) => {
+  // Handle the result
+});
+```
 
 ### `subscribe(name: string, handler: EventHandler): void`
 

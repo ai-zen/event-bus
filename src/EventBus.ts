@@ -1,13 +1,24 @@
 export type EventHandler = (...args: any[]) => any;
 
+export type Disposable = {
+  dispose: () => void;
+};
+
 export default class EventBus {
   public subscribers: Map<string, Set<EventHandler>> = new Map();
 
-  public on(name: string, handler: EventHandler): void {
+  public on(name: string, handler: EventHandler): Disposable {
     if (!this.subscribers.has(name)) {
       this.subscribers.set(name, new Set());
     }
+
     this.subscribers.get(name)?.add(handler);
+
+    return {
+      dispose: () => {
+        this.off(name, handler);
+      },
+    };
   }
 
   public off(name: string, handler: EventHandler): boolean {
@@ -28,26 +39,31 @@ export default class EventBus {
 
   public gather<T>(name: string, ...args: any[]): T[] {
     const results: T[] = [];
+
     this.subscribers.get(name)?.forEach((handler) => {
       results.push(handler(...args));
-    })
+    });
+
     return results;
   }
 
   public gatherMap<T>(name: string, ...args: any[]): Map<EventHandler, T> {
     const results = new Map<EventHandler, T>();
+
     this.subscribers.get(name)?.forEach((handler) => {
       results.set(handler, handler(...args));
-    })
+    });
+
     return results;
   }
 
-  public once(name: string, handler: EventHandler): void {
+  public once(name: string, handler: EventHandler): Disposable {
     const onceHandler = (...args: any[]) => {
       this.off(name, onceHandler);
       return handler(...args);
     };
-    this.on(name, onceHandler);
+
+    return this.on(name, onceHandler);
   }
 
   public promise(name: string): Promise<any> {
