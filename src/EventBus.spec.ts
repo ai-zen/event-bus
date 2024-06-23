@@ -137,4 +137,32 @@ describe("EventBus", () => {
 
     disposable.dispose(); // Automatically unsubscribed after the first invocation
   });
+
+  test("handling errors emitted by eventBus.error()", () => {
+    const errorHandler1 = jest.fn();
+    const errorHandler2 = jest.fn();
+
+    class MyError extends Error {}
+
+    eventBus.on("errorEvent", () => {}, errorHandler1);
+    eventBus.on("errorEvent", () => {}, errorHandler2);
+    eventBus.error("errorEvent", new MyError("Error occurred"));
+
+    expect(errorHandler1).toHaveBeenCalledWith(expect.any(MyError));
+    expect(errorHandler2).toHaveBeenCalledWith(expect.any(MyError));
+  });
+
+  test("handling errors of eventBus.promise()", async () => {
+    const errorHandler = jest.fn();
+
+    class MyError extends Error {}
+
+    setTimeout(() => {
+      eventBus.error("errorEvent", new MyError("Error occurred"));
+    }, 1000);
+
+    await eventBus.promise("errorEvent").catch(errorHandler);
+
+    expect(errorHandler).toHaveBeenCalledWith(expect.any(MyError));
+  });
 });

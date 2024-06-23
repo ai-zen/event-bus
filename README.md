@@ -52,13 +52,14 @@ const resultPromise = eventBus.promise("eventName");
 
 ## API
 
-### `on(name: string, handler: EventHandler): Disposable`
+### `on(name: string, handler: EventHandler, error?: ErrorHandler): Disposable`
 
-Subscribe to an event.
+Subscribes to an event.
 
 - `name` (required): The name of the event to subscribe to.
 - `handler` (required): The event handler function.
-- Returns: A Disposable object with a `dispose` method that can be used to unsubscribe from the event.
+- `error` (optional): The error handler function.
+- Returns: A Disposable object that can be used to unsubscribe from the event.
 
 #### Example
 
@@ -73,52 +74,90 @@ disposable.dispose();
 
 ### `off(name: string, handler: EventHandler): boolean`
 
-Unsubscribe from an event.
+Unsubscribes from an event.
 
 - `name` (required): The name of the event to unsubscribe from.
 - `handler` (required): The event handler function.
-- Returns: `true` if the handler was successfully removed, `false` otherwise.
+- Returns: True if the unsubscribing was successful, otherwise false.
 
 ### `offAll(name: string): void`
 
-Unsubscribe from all handlers of an event.
+Unsubscribes all event handlers from an event.
 
-- `name` (required): The name of the event to unsubscribe from.
+- `name` (required): The name of the event to unsubscribe all handlers from.
 
 ### `destroy(): void`
 
-Destroy the event bus and remove all event subscriptions.
+Destroys the event bus by clearing all event subscribers.
 
 ### `emit(name: string, ...args: any[]): void`
 
-Emit an event.
+Emits an event.
 
 - `name` (required): The name of the event to emit.
-- `args` (optional): Arguments to pass to the event handlers.
+- `args` (optional): The arguments to pass to the event handlers.
+
+### `error(name: string, reason: any): void`
+
+This method is used to send an error event through the event bus.
+
+- `name` (required): The name of the error event to be sent.
+- `reason` (required): The reason for the error.
+
+#### Example
+
+```javascript
+try {
+  // Do something that might throw an error
+  const data = await getData();
+  eventBus.emit("fooEvent", data);
+} catch (error) {
+  eventBus.error("fooEvent", error); // Send an error event
+}
+```
+
+```javascript
+// Use the error handler function for eventBus.on
+eventBus.on(
+  "fooEvent",
+  (data) => {
+    // Handle the data
+  },
+  (error) => {
+    // Handle the error
+  }
+);
+
+// You can also use a promise catch to handle the error
+eventBus.promise("fooEvent").catch((error) => {
+  // Handle the error
+});
+```
 
 ### `gather<T>(name: string, ...args: any[]): T[]`
 
-Gather the results returned by all handlers of an event.
+Gathers the results from all event handlers of the specified event.
 
 - `name` (required): The name of the event to gather results from.
-- `args` (optional): Arguments to pass to the event handlers.
-- Returns: An array containing the results returned by the event handlers.
+- `args` (optional): The arguments to pass to the event handlers.
+- Returns: An array of results from all event handlers.
 
 ### `gatherMap<T>(name: string, ...args: any[]): Map<EventHandler, T>`
 
-Gather the results returned by all handlers of an event as a map.
+Gathers the results from all event handlers of the specified event with a map of the handlers.
 
 - `name` (required): The name of the event to gather results from.
-- `args` (optional): Arguments to pass to the event handlers.
-- Returns: A map containing the event handler functions as keys and the results returned by the event handlers as values.
+- `args` (optional): The arguments to pass to the event handlers.
+- Returns: A map of event handlers and their corresponding results.
 
-### `once(name: string, handler: EventHandler): Disposable`
+### `once(name: string, handler: EventHandler, error?: ErrorHandler): Disposable`
 
-Subscribe to an event and automatically unsubscribe after the first invocation.
+Subscribes to an event and unsubscribes automatically after the event is emitted once.
 
 - `name` (required): The name of the event to subscribe to.
 - `handler` (required): The event handler function.
-- Returns: A Disposable object with a `dispose` method that can be used to unsubscribe from the event.
+- `error` (optional): The error handler function.
+- Returns: A Disposable object that can be used to unsubscribe from the event.
 
 #### Example
 
@@ -132,10 +171,10 @@ const disposable = eventBus.once("eventName", (arg1, arg2) => {
 
 ### `promise(name: string): Promise<any>`
 
-Subscribe to an event and return a promise that resolves when the event is emitted.
+Returns a promise that resolves when the specified event is emitted.
 
-- `name` (required): The name of the event to subscribe to.
-- Returns: A promise that resolves with the result of the event handler when the event is emitted.
+- `name` (required): The name of the event to create a promise for.
+- Returns: A promise that resolves when the event is emitted.
 
 #### Example
 
@@ -149,15 +188,15 @@ resultPromise.then((result) => {
 
 ### `subscribe(name: string, handler: EventHandler): void`
 
-Alias for `on(name, handler)`.
+Alias for the `on` method.
 
 ### `unsubscribe(name: string, handler: EventHandler): boolean`
 
-Alias for `off(name, handler)`.
+Alias for the `off` method.
 
 ### `publish(name: string, ...args: any[]): void`
 
-Alias for `emit(name, ...args)`.
+Alias for the `emit` method.
 
 ## License
 

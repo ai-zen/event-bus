@@ -1,6 +1,6 @@
 {
   "name": "@ai-zen/event-bus",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "EventBus is a simple event management library for TypeScript.",
   "main": "dist/EventBus.js",
   "types": "dist/EventBus.d.ts",
